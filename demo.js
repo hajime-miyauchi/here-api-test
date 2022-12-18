@@ -1,28 +1,28 @@
 
-/**
- * Adds a circle over New Delhi with a radius of 1000 metres onto the map
- *
- * @param  {H.Map} map      A HERE Map instance within the application
- */
-function addCircleToMap(map){
-  map.addObject(new H.map.Circle(
-    // The central point of the circle
-    {lat:28.6071, lng:77.2127},
-    // The radius of the circle in meters
-    1000,
-    {
-      style: {
-        strokeColor: 'rgba(55, 85, 170, 0.6)', // Color of the perimeter
-        lineWidth: 2,
-        fillColor: 'rgba(0, 128, 0, 0.7)'  // Color of the circle
+function showGeoJSONData (map) {
+  // Create GeoJSON reader which will download the specified file.
+  // Shape of the file was obtained by using HERE Geocoder API.
+  // It is possible to customize look and feel of the objects.
+  var reader = new H.data.geojson.Reader('aichi.json', {
+    // This function is called each time parser detects a new map object
+    style: function (mapObject) {
+      // Parsed geo objects could be styled using setStyle method
+      if (mapObject instanceof H.map.Polygon) {
+        mapObject.setStyle({
+          fillColor: 'rgba(255, 0, 0, 0.5)',
+          strokeColor: 'rgba(0, 0, 255, 0.2)',
+          lineWidth: 3
+        });
       }
     }
-  ));
+  });
+
+  // Start parsing the file
+  reader.parse();
+
+  // Add layer which shows GeoJSON data on the map
+  map.addLayer(reader.getLayer());
 }
-
-
-
-
 
 /**
  * Boilerplate map initialization code starts below:
@@ -38,7 +38,7 @@ var defaultLayers = platform.createDefaultLayers();
 //Step 2: initialize a map - this map is centered over New Delhi
 var map = new H.Map(document.getElementById('map'),
   defaultLayers.vector.normal.map, {
-  center: {lat:28.6071, lng:77.2127},
+  center: {lat:35.18028, lng:136.90667},
   zoom: 13,
   pixelRatio: window.devicePixelRatio || 1
 });
@@ -54,4 +54,6 @@ var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
 var ui = H.ui.UI.createDefault(map, defaultLayers);
 
 // Now use the map as required...
-addCircleToMap(map);
+// addCircleToMap(map);
+
+showGeoJSONData(map);
